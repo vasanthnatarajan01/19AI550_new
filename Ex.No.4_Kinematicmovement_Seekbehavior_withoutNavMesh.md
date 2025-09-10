@@ -1,4 +1,4 @@
-<img width="1919" height="1141" alt="Screenshot 2025-09-10 144611" src="https://github.com/user-attachments/assets/6f2607eb-67d6-4e26-9251-f9ace68c8ade" /># Ex.No: 4  Implementation of Kinematic movement -seek behavior in Unity
+# Ex.No: 4  Implementation of Kinematic movement -seek behavior in Unity
 ### DATE: 03/09/2025                                                                           
 ### REGISTER NUMBER : 212224110060
 ### AIM: 
