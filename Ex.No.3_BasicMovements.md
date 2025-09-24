@@ -60,7 +60,7 @@ public class TransformOperations : MonoBehaviour
 
 
 
-### The Cylinder scales up and down smoothly.
+### The Sphere scales up and down smoothly.
 
 <img width="1919" height="1138" alt="Screenshot 2025-09-10 141603" src="https://github.com/user-attachments/assets/9f0afd37-c95a-402d-b4d1-638bf5ce35ff" />
 
