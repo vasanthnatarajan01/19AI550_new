@@ -1,6 +1,6 @@
 # Ex.No: 8  Implementation of Path finding using A* algorithm
-### DATE:                                                                            
-### REGISTER NUMBER : 
+### DATE:   24/09/2025                                                                        
+### REGISTER NUMBER : 212224110060
 ### AIM: 
 To write a program to create graph using waypoints and use A* algorithm to find path between source and destination.
 ### Algorithm:
@@ -17,130 +17,134 @@ To write a program to create graph using waypoints and use A* algorithm to find 
 ```  
 ### Program:
 ```
-**#1.Waypoint.cs**
-using UnityEngine;
-using System.Collections.Generic;
-
-public class Waypoint : MonoBehaviour {
-    public List<Waypoint> neighbors = new List<Waypoint>();
-
-    // Optional: Draw connections in the editor
-    private void OnDrawGizmos() {
-        Gizmos.color = Color.yellow;
-        foreach (var neighbor in neighbors) {
-            if (neighbor != null) {
-                Gizmos.DrawLine(transform.position, neighbor.transform.position);
-            }
-        }
-    }
-}
-**#2. WaypointGraph.cs**
-using UnityEngine;
-
-public class WaypointGraph : MonoBehaviour {
-    public Waypoint[] allWaypoints;
-
-    void Awake() {
-        allWaypoints = FindObjectsOfType<Waypoint>();
-    }
-}
-**#3.Pathfinding.cs**
-using System.Collections.Generic;
-using UnityEngine;
-public class Pathfinding : MonoBehaviour {
-    public static List<Waypoint> FindPath(Waypoint start, Waypoint goal) {
-        var openSet = new List<Waypoint>();
-        var cameFrom = new Dictionary<Waypoint, Waypoint>();
-        var gScore = new Dictionary<Waypoint, float>();
-        var fScore = new Dictionary<Waypoint, float>();
-
-        foreach (var wp in FindObjectsOfType<Waypoint>()) {
-            gScore[wp] = float.PositiveInfinity;
-            fScore[wp] = float.PositiveInfinity;
-        }
-
-        gScore[start] = 0f;
-        fScore[start] = Vector3.Distance(start.transform.position, goal.transform.position);
-        openSet.Add(start);
-
-        while (openSet.Count > 0) {
-            Waypoint current = openSet[0];
-            foreach (var wp in openSet) {
-                if (fScore[wp] < fScore[current]) {
-                    current = wp;
-                }
-            }
-
-            if (current == goal) {
-                return ReconstructPath(cameFrom, current);
-            }
-
-            openSet.Remove(current);
-
-            foreach (var neighbor in current.neighbors) {
-                float tentativeG = gScore[current] + Vector3.Distance(current.transform.position, neighbor.transform.position);
-                if (tentativeG < gScore[neighbor]) {
-                    cameFrom[neighbor] = current;
-                    gScore[neighbor] = tentativeG;
-                    fScore[neighbor] = tentativeG + Vector3.Distance(neighbor.transform.position, goal.transform.position);
-
-                    if (!openSet.Contains(neighbor)) {
-                        openSet.Add(neighbor);
-                    }
-                }
-            }
-        }
-
-        return null; // No path found
-    }
-
-    private static List<Waypoint> ReconstructPath(Dictionary<Waypoint, Waypoint> cameFrom, Waypoint current) {
-        var path = new List<Waypoint> { current };
-        while (cameFrom.ContainsKey(current)) {
-            current = cameFrom[current];
-            path.Insert(0, current);
-        }
-        return path;
-    }
-}
-
-**#4.AICharacter.cs**
-using UnityEngine;
-using System.Collections.Generic;
-
-public class AICharacter : MonoBehaviour {
-    public Waypoint startWaypoint;
-    public Waypoint goalWaypoint;
-    public float speed = 3f;
-
-    private List<Waypoint> path;
-    private int currentIndex = 0;
-
-    void Start() {
-        path = Pathfinding.FindPath(startWaypoint, goalWaypoint);
-    }
-
-    void Update() {
-        if (path == null || currentIndex >= path.Count) return;
-
-        Vector3 target = path[currentIndex].transform.position;
-        transform.position = Vector3.MoveTowards(transform.position, target, speed * Time.deltaTime);
-
-        if (Vector3.Distance(transform.position, target) < 0.1f) {
-            currentIndex++;
-        }
-    }
-}
-Check the following
+   **#1.Waypoint.cs**
+   using UnityEngine;
+   using System.Collections.Generic;
+   
+   public class Waypoint : MonoBehaviour {
+       public List<Waypoint> neighbors = new List<Waypoint>();
+   
+       // Optional: Draw connections in the editor
+       private void OnDrawGizmos() {
+           Gizmos.color = Color.yellow;
+           foreach (var neighbor in neighbors) {
+               if (neighbor != null) {
+                   Gizmos.DrawLine(transform.position, neighbor.transform.position);
+               }
+           }
+       }
+   }
+   **#2. WaypointGraph.cs**
+   using UnityEngine;
+   
+   public class WaypointGraph : MonoBehaviour {
+       public Waypoint[] allWaypoints;
+   
+       void Awake() {
+           allWaypoints = FindObjectsOfType<Waypoint>();
+       }
+   }
+   **#3.Pathfinding.cs**
+   using System.Collections.Generic;
+   using UnityEngine;
+   public class Pathfinding : MonoBehaviour {
+       public static List<Waypoint> FindPath(Waypoint start, Waypoint goal) {
+           var openSet = new List<Waypoint>();
+           var cameFrom = new Dictionary<Waypoint, Waypoint>();
+           var gScore = new Dictionary<Waypoint, float>();
+           var fScore = new Dictionary<Waypoint, float>();
+   
+           foreach (var wp in FindObjectsOfType<Waypoint>()) {
+               gScore[wp] = float.PositiveInfinity;
+               fScore[wp] = float.PositiveInfinity;
+           }
+   
+           gScore[start] = 0f;
+           fScore[start] = Vector3.Distance(start.transform.position, goal.transform.position);
+           openSet.Add(start);
+   
+           while (openSet.Count > 0) {
+               Waypoint current = openSet[0];
+               foreach (var wp in openSet) {
+                   if (fScore[wp] < fScore[current]) {
+                       current = wp;
+                   }
+               }
+   
+               if (current == goal) {
+                   return ReconstructPath(cameFrom, current);
+               }
+   
+               openSet.Remove(current);
+   
+               foreach (var neighbor in current.neighbors) {
+                   float tentativeG = gScore[current] + Vector3.Distance(current.transform.position, neighbor.transform.position);
+                   if (tentativeG < gScore[neighbor]) {
+                       cameFrom[neighbor] = current;
+                       gScore[neighbor] = tentativeG;
+                       fScore[neighbor] = tentativeG + Vector3.Distance(neighbor.transform.position, goal.transform.position);
+   
+                       if (!openSet.Contains(neighbor)) {
+                           openSet.Add(neighbor);
+                       }
+                   }
+               }
+           }
+   
+           return null; // No path found
+       }
+   
+       private static List<Waypoint> ReconstructPath(Dictionary<Waypoint, Waypoint> cameFrom, Waypoint current) {
+           var path = new List<Waypoint> { current };
+           while (cameFrom.ContainsKey(current)) {
+               current = cameFrom[current];
+               path.Insert(0, current);
+           }
+           return path;
+       }
+   }
+   
+   **#4.AICharacter.cs**
+   using UnityEngine;
+   using System.Collections.Generic;
+   
+   public class AICharacter : MonoBehaviour {
+       public Waypoint startWaypoint;
+       public Waypoint goalWaypoint;
+       public float speed = 3f;
+   
+       private List<Waypoint> path;
+       private int currentIndex = 0;
+   
+       void Start() {
+           path = Pathfinding.FindPath(startWaypoint, goalWaypoint);
+       }
+   
+       void Update() {
+           if (path == null || currentIndex >= path.Count) return;
+   
+           Vector3 target = path[currentIndex].transform.position;
+           transform.position = Vector3.MoveTowards(transform.position, target, speed * Time.deltaTime);
+   
+           if (Vector3.Distance(transform.position, target) < 0.1f) {
+               currentIndex++;
+           }
+       }
+   }
+```
+## Check the following
 1. Waypoints placed in scene
 2. Neighbors set manually via Inspector
 3. WaypointGraph script on a manager
 4. AICharacter assigned a start and goal
 ### Output:
 
+<img width="1910" height="1138" alt="Screenshot 2025-09-24 090751" src="https://github.com/user-attachments/assets/ebe19bef-5943-4ff3-bcfc-9e06ead456b0" />
 
 
+<img width="1919" height="1139" alt="Screenshot 2025-09-24 090945" src="https://github.com/user-attachments/assets/6dd2d781-6aaa-4bb7-9840-5de485d28dda" />
 
+<img width="1919" height="1139" alt="Screenshot 2025-09-24 091004" src="https://github.com/user-attachments/assets/548a2be2-b919-4a3a-bbf6-4ca9a03495ed" />
 
 
 
